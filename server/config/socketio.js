@@ -46,7 +46,7 @@ function onConnect(socket) {
         last = next;
         return next;
       });
-      last.emit('bond:allocate', connections[0].user);
+      last.emit('bond:allocate', connections[0].user); 
 
       // for(var i=1;i<connections.length;i++) {
       //   connections[i-1].emit('bond:allocate', connections[i].user)
