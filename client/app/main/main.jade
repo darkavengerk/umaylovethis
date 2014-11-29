@@ -3,6 +3,7 @@ div(ng-include='"components/navbar/navbar.html"')
 .container(ng-show="mode === 'main'")
   .col-sm-12.col-lg-4
     .row
+      button.pull-right.btn(ng-click="refreshRoom()") refresh
       button.pull-right.btn(ng-click="startGame()") start
     .row
       .list-group

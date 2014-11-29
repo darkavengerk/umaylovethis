@@ -1,0 +1,12 @@
+.col-md-12
+	| Watch {{target.name}}
+
+.col-md-12
+	label.col-md-10 Select action to impose
+	.col-md-2
+		button.btn.btn-primary(ng-click='impose()') Select 
+.col-md-12
+	.col-md-6
+		select(ng-model="currentSelection", ng-options="option.key for option in options")
+	.col-md-6
+		div {{currentSelection.desc}}

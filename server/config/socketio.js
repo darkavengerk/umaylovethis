@@ -26,6 +26,8 @@ function getUsers() {
 // When the user connects.. perform this
 function onConnect(socket) {
 
+  socket.emit('whoareyou', {});
+
   socket.on('enroll', function(user) {
     _.remove(lockerRoom, function(socket) {
       return socket.user._id === user._id;
@@ -36,23 +38,14 @@ function onConnect(socket) {
   });
 
   socket.on('start', function (data) {
-    if(lockerRoom.length >= 3) {
-      broadcast('mode', 'bond');
-      var connections = _.shuffle(lockerRoom);
-
-      var last;
-      _.reduce(connections, function(prev, next) {
-        prev.emit('bond:allocate', next.user);
-        last = next;
-        return next;
-      });
-      last.emit('bond:allocate', connections[0].user); 
-
-      // for(var i=1;i<connections.length;i++) {
-      //   connections[i-1].emit('bond:allocate', connections[i].user)
-      // }
-      // connections[connections.length-1].emit('bond:allocate', connections[0].user)
+    if(lockerRoom.length >= 2) {
+      require('../api/games/iknowwhatudid.socket').create(socket, lockerRoom);
     }
+  });
+
+  socket.on('refreshRoom', function () {
+    broadcast('whoareyou', {});
+    lockerRoom = [];
   });
 
   socket.on('say', function(line) {
