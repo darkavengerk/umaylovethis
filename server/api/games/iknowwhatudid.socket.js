@@ -16,9 +16,12 @@ exports.create = function(socket, connectionlist) {
 
 	var numPlayers = connectionlist.length;
 	var entered = 0;
+	var results = [];
 
 	_.forEach(connectionlist, function(connection) {
 	  
+		connection.emit('go', '/iknowwhatudid');
+
 		connection.on('bond:enter', function(user) {
 			entered += 1;
 			if(entered === numPlayers) {
@@ -27,17 +30,35 @@ exports.create = function(socket, connectionlist) {
 			}
 		});
 
-		connection.emit('go', '/iknowwhatudid');
-
 		connection.on('bond:impose', function(option) {
+			var user = option.user;
 			var action = option.action;
+			connection.user.watch = user;
+			results.push({user:user, action:action});
+
 			watchOverList = _.remove(watchOverList, function(item) {
 				return item.id !== action.id;
 			});
+			if(results.length === numPlayers) {
+				_.forEach(results, function(result) {
+					var connection = _.find(connectionlist, function(connection) {
+						console.log(result);
+						return connection.user._id === result.user._id;
+					});
+					result.watch = connection.user.watch;
+					connection.emit('bond:show-result', result);
+				});
+			}
 			allocateOptions(connectionlist, watchOverList);
 		});
 	});
 
+}
+
+function toResultPage(connectionlist) {
+	_.forEach(connectionlist, function(socket) {
+		socket.emit('bond:show-result', watchOverList);
+	});
 }
 
 function allocateUsers(connectionlist) {

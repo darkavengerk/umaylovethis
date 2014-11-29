@@ -10,7 +10,6 @@ angular.module('oneNightApp')
 	    transmit('bond:enter', Auth.getCurrentUser());
 
 	    listen('bond:allocate', function(targetUser) {
-	    	  console.log('allocate1', targetUser);
 	    	  $scope.target = targetUser;
 	    });
 
@@ -22,6 +21,10 @@ angular.module('oneNightApp')
 	    			});
 	    		}
 	    });
+
+	    listen('bond:show-result', function(result) {
+	    		$scope.result = result;
+	    })
 
 	    $scope.impose = function() {
 	    		var selected = $scope.currentSelection;
