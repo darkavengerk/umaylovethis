@@ -26,10 +26,21 @@ angular.module('oneNightApp')
 	    		$scope.result = result;
 	    })
 
+	    listen('bond:select-again', function(result) {
+	    		$scope.waiting = false;
+	    });
+
+	    $scope.finish = function() {
+	    		transmit('bond:finish', '');
+	    		$scope.finishVoted = true;
+	    }
+
 	    $scope.impose = function() {
 	    		var selected = $scope.currentSelection;
-	    		console.log(selected);
-	    		transmit('bond:impose', {user:$scope.target, action:selected});
+	    		if(selected) {
+	    			$scope.waiting = true;
+	    			transmit('bond:impose', {user:$scope.target, action:selected});
+	    		}
 	    }
       }
      });

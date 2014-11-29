@@ -37,13 +37,16 @@ angular.module('oneNightApp')
           $scope.newLine = '';
         };
 
+        $scope.attend = function() {
+          transmit('enroll', $scope.user);
+          $scope.attended = true;
+        }
+
         listen('go', function(whereToGo) {
           $location.path(whereToGo);
         });
 
-        listen('whoareyou', function() {
-          transmit('enroll', $scope.user);
-        });
+        listen('whoareyou', $scope.attend);
 
         listen('mode', function(data) {
           $scope.mode = data;
@@ -52,6 +55,10 @@ angular.module('oneNightApp')
         listen('appendChat', function(data) {
           if(!$scope.chattingTexts) $scope.chattingTexts = '';
           $scope.chattingTexts += data + '\n';
+        });
+
+        listen('chat', function(data) {
+          $scope.chattingTexts = data;
         });
 
         listen('refreshUserlist', function(data) {

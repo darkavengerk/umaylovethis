@@ -26,31 +26,42 @@ function getUsers() {
 // When the user connects.. perform this
 function onConnect(socket) {
 
-  socket.emit('whoareyou', {});
+  // socket.emit('whoareyou', {});
 
-  socket.on('enroll', function(user) {
+  function enroll(user) {
     _.remove(lockerRoom, function(socket) {
       return socket.user._id === user._id;
     });
     socket.user = user;
     lockerRoom.push(socket);
     broadcast('refreshUserlist', _.pluck(lockerRoom, 'user'));
-  });
+    // broadcast('appendChat', socket.user.name + ' entered');
+  }
+  socket.removeListener('enroll', enroll);
+  socket.on('enroll', enroll);
 
-  socket.on('start', function (data) {
+  function start(data) {
     if(lockerRoom.length >= 2) {
       require('../api/games/iknowwhatudid.socket').create(socket, lockerRoom);
+      lockerRoom = [];
     }
-  });
+  }
+  socket.removeListener('start', start);
+  socket.on('start', start);
 
-  socket.on('refreshRoom', function () {
+  function refreshRoom() {
     broadcast('whoareyou', {});
+    broadcast('chat', '');
     lockerRoom = [];
-  });
+  }
+  socket.removeListener('refreshRoom', refreshRoom);
+  socket.on('refreshRoom', refreshRoom);
 
-  socket.on('say', function(line) {
+  function say(line) {
     broadcast('appendChat', socket.user.name + ' : ' + line);
-  })
+  }
+  socket.removeListener('say', say);
+  socket.on('say', say)
 
   // Insert sockets below
   require('../api/thing/thing.socket').register(socket);

@@ -3,12 +3,14 @@ div(ng-include='"components/navbar/navbar.html"')
 .container(ng-show="mode === 'main'")
   .col-sm-12.col-lg-4
     .row
-      button.pull-right.btn(ng-click="refreshRoom()") refresh
-      button.pull-right.btn(ng-click="startGame()") start
-    .row
+      label.pull-left {{user.name}}
+      button.pull-right.btn(ng-click="attend()", ng-show="!attended") attend
+      button.pull-right.btn(ng-click="refreshRoom()", ng-show="attended") refresh
+      button.pull-right.btn(ng-click="startGame()", ng-show="attended") start
+    .row(style="overflow:scroll;height:150px;overflow-x: hidden;")
       .list-group
         .list-group-item(ng-repeat="user in userlist") {{user.name}}
-    .row
+    .row(ng-show="attended")
       textarea.col-md-12(cols=50, rows=10, ng-model="chattingTexts", style="color:black;")
       div
         input.form-control(type='text', placeholder='Add a new thing here.', 
